@@ -53,19 +53,41 @@
 #define drawer_ki 0.1
 #define drawer_kd 3
 #define drawer_out 3000 
-#define drawer_iout 800
+#define drawer_iout 300
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+uint8_t indata[1];
+uint8_t SBUS_in[25];
+int num=0;
+uint16_t ch[16];
+void SBUS_intoCH(void){
+ch[0]  = ((SBUS_in[1]|SBUS_in[2]<<8)                      & 0x07FF);
+ch[1]  = ((SBUS_in[2]>>3 |SBUS_in[3]<<5)                 & 0x07FF);
+ch[2]  = ((SBUS_in[3]>>6 |SBUS_in[4]<<2 |SBUS_in[5]<<10)  & 0x07FF);
+ch[3]  = ((SBUS_in[5]>>1 |SBUS_in[6]<<7)                 & 0x07FF);
+ch[4]  = ((SBUS_in[6]>>4 |SBUS_in[7]<<4)                 & 0x07FF);
+ch[5]  = ((SBUS_in[7]>>7 |SBUS_in[8]<<1 |SBUS_in[9]<<9)   & 0x07FF);
+ch[6]  = ((SBUS_in[9]>>2 |SBUS_in[10]<<6)                & 0x07FF);
+ch[7]  = ((SBUS_in[10]>>5|SBUS_in[11]<<3)                & 0x07FF);
+ch[8]  = ((SBUS_in[12]   |SBUS_in[13]<<8)                & 0x07FF);
+ch[9]  = ((SBUS_in[13]>>3|SBUS_in[14]<<5)                & 0x07FF);
+ch[10] = ((SBUS_in[14]>>6|SBUS_in[15]<<2|SBUS_in[16]<<10) & 0x07FF);
+ch[11] = ((SBUS_in[16]>>1|SBUS_in[17]<<7)                & 0x07FF);
+ch[12] = ((SBUS_in[17]>>4|SBUS_in[18]<<4)                & 0x07FF);
+ch[13] = ((SBUS_in[18]>>7|SBUS_in[19]<<1|SBUS_in[20]<<9)  & 0x07FF);
+ch[14] = ((SBUS_in[20]>>2|SBUS_in[21]<<6)                & 0x07FF);
+ch[15] = ((SBUS_in[21]>>5|SBUS_in[22]<<3)                & 0x07FF);
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint16_t pwm_val_1=0;
 uint16_t pwm_val_2=0;
+uint16_t pwm_val_3=0;
 void roll(void);
 void grab(void);
 void ring(void);
@@ -118,15 +140,16 @@ int main(void)
   MX_CAN1_Init();
   MX_SPI2_Init();
   MX_TIM3_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-	float pid[3]={drawer_kp,drawer_ki,drawer_kp};
+	float pid[3]={drawer_kp,drawer_ki,drawer_kd};
 	can_init();//start 
 	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
 	
 	HAL_TIM_Base_Start_IT(&htim2);
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);//264--500
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);//210-430
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);//100--200
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);//231->1 -- 460->2
 	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
@@ -134,6 +157,7 @@ int main(void)
 	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, light);
 	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
 	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
+	HAL_UART_Receive_IT(&huart3,indata, 1);
 	//__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val);
 	//HAL_Delay(1000);
   /* USER CODE END 2 */
@@ -143,11 +167,24 @@ int main(void)
   while (1)
   {
 		HAL_SPI_Transmit_DMA(&hspi2,spi_buff,4);
-		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, light);//20
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_1);
+		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);//20
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
 		if(get==1)grab();
 		get=0;
+		if(ch[4]>1000)
+		{
+			grab();
+			while(ch[4]>1000)
+			{
+				HAL_Delay(1);
+			}
+		}
+		if(ch[2]>=600&&ch[2]<=1600)
+		{
+			drawer_distance_set=(ch[2]-600)*320;
+		}
 		if(mode[0]!=cam_info[1])
 			HAL_UART_Transmit(&huart6,mode,sizeof(mode),1000);
 		else 
@@ -263,18 +300,25 @@ void roll()
 
 void grab()
 {
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 230);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 208);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 260);
 	HAL_Delay(300);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
-	HAL_Delay(300);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2,106);
-	HAL_Delay(300);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 440);
-	HAL_Delay(2000);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 210);
 	HAL_Delay(100);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 250);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 130);
+	HAL_Delay(400);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
+	HAL_Delay(200);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 100);
+	HAL_Delay(300);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 460);
+	HAL_Delay(500);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 230);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 200);
+	HAL_Delay(100);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 300);
+	HAL_Delay(1000);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 430);
 }
 
 void ring()
@@ -296,6 +340,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	{
 		HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
 	}
+	if(huart==&huart3)
+	{
+		if(num!=0||indata[0]==0x0f){
+			if(indata[0]==0x0f)num=0;
+			SBUS_in[num++]=indata[0];
+			if(num==21){num=0;SBUS_intoCH();}
+		}
+		HAL_UART_Receive_IT(&huart3,indata, 1);
+	}
+	
 }
 /* USER CODE END 4 */
 

@@ -218,32 +218,37 @@
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_1,0x0A</ItemText>
+          <ItemText>drawer,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_2,0x0A</ItemText>
+          <ItemText>drawer_pid</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>\\RC_TOP\../Core/Src/main.c\pwm_val_1</ItemText>
+          <ItemText>pwm_val_1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer,0x0A</ItemText>
+          <ItemText>pwm_val_2,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_distance_set,0x0A</ItemText>
+          <ItemText>pwm_val_3,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_pid</ItemText>
+          <ItemText>drawer_distance_set,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>18</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>ch,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
