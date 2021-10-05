@@ -185,6 +185,14 @@ int main(void)
 		{
 			drawer_distance_set=(ch[2]-600)*320;
 		}
+		else if(ch[2]<600)
+		{
+			drawer_distance_set=0;
+		}
+		else if(ch[2]>1600)
+		{
+			drawer_distance_set=320000;
+		}
 		if(mode[0]!=cam_info[1])
 			HAL_UART_Transmit(&huart6,mode,sizeof(mode),1000);
 		else 
