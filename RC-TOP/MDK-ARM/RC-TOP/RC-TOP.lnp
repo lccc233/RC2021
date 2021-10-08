@@ -3,7 +3,6 @@
 "rc-top\main.o"
 "rc-top\gpio.o"
 "rc-top\can.o"
-"rc-top\dma.o"
 "rc-top\spi.o"
 "rc-top\tim.o"
 "rc-top\usart.o"

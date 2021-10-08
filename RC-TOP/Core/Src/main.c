@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "can.h"
-#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -91,14 +90,16 @@ uint16_t pwm_val_3=0;
 void roll(void);
 void grab(void);
 void ring(void);
+void send_to_hcc(void);
 uint8_t QRCode[1];
 uint8_t cam_info[3];
 uint8_t mode[1];
 int QRok=0;
 uint8_t led_counter=0;
 int get=0;
-int light;
-uint8_t spi_buff[6]={0xaa,0xbb,0xcc,0xdd,0xee,0xff};
+
+uint8_t spi_tx_buff[3]={0xAA,0x11,0xAA};
+uint8_t spi_rx_buff[3]={0};
 
 int drawer_distance_set=0;
 pid_type_def drawer_pid;
@@ -136,12 +137,13 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   MX_TIM2_Init();
-  MX_DMA_Init();
   MX_CAN1_Init();
   MX_SPI2_Init();
   MX_TIM3_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+
+	
 	float pid[3]={drawer_kp,drawer_ki,drawer_kd};
 	can_init();//start 
 	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
@@ -154,7 +156,7 @@ int main(void)
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
-	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, light);
+	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);
 	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
 	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
 	HAL_UART_Receive_IT(&huart3,indata, 1);
@@ -165,9 +167,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-		HAL_SPI_Transmit_DMA(&hspi2,spi_buff,4);
-		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);//20
+  {	
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
@@ -221,7 +221,7 @@ int main(void)
 				}
 			}
 		}
-		HAL_Delay(100);
+		HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -332,6 +332,27 @@ void grab()
 void ring()
 {
 	
+}
+
+void send_to_hcc()
+{
+	int i=0;
+	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
+	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[i],&spi_rx_buff[0],1,10);
+	while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
+	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
+	i++;
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
+	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[i],&spi_rx_buff[1],1,10);
+  while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
+	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
+	i++;
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
+	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[i],&spi_rx_buff[2],1,10);
+  while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
+	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
