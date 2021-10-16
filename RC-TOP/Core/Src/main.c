@@ -87,6 +87,8 @@ ch[15] = ((SBUS_in[21]>>5|SBUS_in[22]<<3)                & 0x07FF);
 uint16_t pwm_val_1=0;
 uint16_t pwm_val_2=0;
 uint16_t pwm_val_3=0;
+uint16_t rabbit_1=0;
+uint16_t rabbit_2=0;
 void roll(void);
 void grab(void);
 void ring(void);
@@ -141,6 +143,7 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM3_Init();
   MX_USART3_UART_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
 
 	
@@ -153,6 +156,8 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);//100--200
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);//231->1 -- 460->2
 	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_2);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
@@ -171,12 +176,37 @@ int main(void)
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
 		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
+		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, rabbit_1);
+		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
 		if(get==1)grab();
 		get=0;
+		if(ch[1]<600)
+		{
+			rabbit_1=150;
+			rabbit_2=380;
+		}
+		else if(ch[1]>1600)
+		{
+			rabbit_1=350;
+			rabbit_2=230;
+		}
+		else
+		{
+			rabbit_1=(ch[1]-600)/5+150;
+			rabbit_2=380-(ch[1]-600)*3/20;
+		}
 		if(ch[4]>1000)
 		{
 			grab();
 			while(ch[4]>1000)
+			{
+				HAL_Delay(1);
+			}
+		}
+		if(ch[5]>1000)
+		{
+			roll();
+			while(ch[5]>1000)
 			{
 				HAL_Delay(1);
 			}
@@ -324,7 +354,7 @@ void grab()
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 200);
 	HAL_Delay(100);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 300);
-	HAL_Delay(1000);
+	HAL_Delay(500);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 430);
 }
