@@ -105,82 +105,9 @@ uint8_t spi_rx_buff[3]={0};
 
 int drawer_distance_set=0;
 pid_type_def drawer_pid;
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
+void controller()
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_TIM1_Init();
-  MX_USART1_UART_Init();
-  MX_USART6_UART_Init();
-  MX_TIM2_Init();
-  MX_CAN1_Init();
-  MX_SPI2_Init();
-  MX_TIM3_Init();
-  MX_USART3_UART_Init();
-  MX_TIM8_Init();
-  /* USER CODE BEGIN 2 */
-
-	
-	float pid[3]={drawer_kp,drawer_ki,drawer_kd};
-	can_init();//start 
-	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
-	
-	HAL_TIM_Base_Start_IT(&htim2);
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);//210-430
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);//100--200
-	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);//231->1 -- 460->2
-	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_2);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
-	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);
-	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
-	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
-	HAL_UART_Receive_IT(&huart3,indata, 1);
-	//__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val);
-	//HAL_Delay(1000);
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {	
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
-		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, rabbit_1);
-		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
-		if(get==1)grab();
-		get=0;
-		if(ch[1]<600)
+	if(ch[1]<600)
 		{
 			rabbit_1=150;
 			rabbit_2=380;
@@ -223,6 +150,90 @@ int main(void)
 		{
 			drawer_distance_set=320000;
 		}
+}
+void discode(uint8_t aim_data)
+{
+	uint8_t test_code=0xf0;
+	if((aim_data&test_code)==test_code)
+	{
+		
+	}
+}
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM1_Init();
+  MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
+  MX_TIM2_Init();
+  MX_CAN1_Init();
+  MX_SPI2_Init();
+  MX_TIM3_Init();
+  MX_USART3_UART_Init();
+  MX_TIM8_Init();
+  /* USER CODE BEGIN 2 */
+	float pid[3]={drawer_kp,drawer_ki,drawer_kd};
+	can_init();//start 
+	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
+	
+	HAL_TIM_Base_Start_IT(&htim2);
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);//210-430
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);//100--200
+	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);//231->1 -- 460->2
+	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_2);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
+	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);
+	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
+	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
+	HAL_UART_Receive_IT(&huart3,indata, 1);
+	//__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val);
+	//HAL_Delay(1000);
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {	
+		send_to_hcc();
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
+		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
+		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, rabbit_1);
+		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
+		if(get==1)grab();
+		get=0;
+		controller();
 		if(mode[0]!=cam_info[1])
 			HAL_UART_Transmit(&huart6,mode,sizeof(mode),1000);
 		else 
@@ -368,19 +379,19 @@ void send_to_hcc()
 {
 	int i=0;
 	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[i],&spi_rx_buff[0],1,10);
+	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[0],&spi_rx_buff[2],1,10);
 	while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
 	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
 	i++;
 	HAL_Delay(1);
 	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[i],&spi_rx_buff[1],1,10);
+	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[1],&spi_rx_buff[0],1,10);
   while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
 	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
 	i++;
 	HAL_Delay(1);
 	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[i],&spi_rx_buff[2],1,10);
+	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[2],&spi_rx_buff[1],1,10);
   while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
 	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
 }
