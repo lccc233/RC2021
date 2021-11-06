@@ -151,12 +151,22 @@ void controller()
 			drawer_distance_set=320000;
 		}
 }
-void discode(uint8_t aim_data)
+void discode()
 {
-	uint8_t test_code=0xf0;
-	if((aim_data&test_code)==test_code)
+	for(int i=0;i<3;++i)
 	{
+		if((spi_rx_buff[i]&0xf0)==0xf0)
+		{
 		
+		}
+		else if((spi_rx_buff[i]&0xf0)==0x90)
+		{
+		
+		}
+		else if((spi_rx_buff[i]&0xf0)==0x60)
+		{
+		
+		}
 	}
 }
 /* USER CODE END 0 */
@@ -233,7 +243,7 @@ int main(void)
 		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
 		if(get==1)grab();
 		get=0;
-		controller();
+		if(ch[0])controller();
 		if(mode[0]!=cam_info[1])
 			HAL_UART_Transmit(&huart6,mode,sizeof(mode),1000);
 		else 

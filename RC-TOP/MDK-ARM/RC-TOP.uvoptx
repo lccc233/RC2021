@@ -188,85 +188,80 @@
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>light,0x0A</ItemText>
+          <ItemText>drawer</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer</ItemText>
+          <ItemText>drawer_change,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_change,0x0A</ItemText>
+          <ItemText>drawer_delta,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_delta,0x0A</ItemText>
+          <ItemText>drawer_distance_set,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_distance_set,0x0A</ItemText>
+          <ItemText>drawer_pid</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_pid</ItemText>
+          <ItemText>drawer,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer,0x0A</ItemText>
+          <ItemText>drawer_pid</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_pid</ItemText>
+          <ItemText>pwm_val_1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_1,0x0A</ItemText>
+          <ItemText>pwm_val_2,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_2,0x0A</ItemText>
+          <ItemText>pwm_val_3,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_3,0x0A</ItemText>
+          <ItemText>drawer_distance_set,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_distance_set,0x0A</ItemText>
+          <ItemText>ch,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ch,0x0A</ItemText>
+          <ItemText>spi_tx_buff</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spi_tx_buff</ItemText>
+          <ItemText>spi_rx_buff</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spi_rx_buff</ItemText>
-        </Ww>
-        <Ww>
-          <count>21</count>
-          <WinNumber>1</WinNumber>
           <ItemText>rabbit_1,0x0A</ItemText>
         </Ww>
         <Ww>
-          <count>22</count>
+          <count>21</count>
           <WinNumber>1</WinNumber>
           <ItemText>rabbit_2,0x0A</ItemText>
         </Ww>

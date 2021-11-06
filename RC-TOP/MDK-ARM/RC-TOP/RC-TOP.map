@@ -769,7 +769,7 @@ Removing Unused input sections from the image.
     Removing main.o(.rev16_text), (4 bytes).
     Removing main.o(.revsh_text), (4 bytes).
     Removing main.o(.rrx_text), (6 bytes).
-    Removing main.o(i.discode), (2 bytes).
+    Removing main.o(i.discode), (10 bytes).
     Removing main.o(i.ring), (2 bytes).
     Removing gpio.o(.rev16_text), (4 bytes).
     Removing gpio.o(.revsh_text), (4 bytes).
@@ -1242,7 +1242,7 @@ Removing Unused input sections from the image.
     Removing pid.o(.rrx_text), (6 bytes).
     Removing pid.o(i.PID_clear), (64 bytes).
 
-475 unused section(s) (total 33857 bytes) removed from the image.
+475 unused section(s) (total 33865 bytes) removed from the image.
 
 ==============================================================================
 
@@ -1564,13 +1564,13 @@ Image Symbol Table
     i.controller                             0x080035b8   Section        0  main.o(i.controller)
     i.grab                                   0x0800366c   Section        0  main.o(i.grab)
     i.main                                   0x080036f8   Section        0  main.o(i.main)
-    i.roll                                   0x080038a0   Section        0  main.o(i.roll)
-    i.send_to_hcc                            0x080038d8   Section        0  main.o(i.send_to_hcc)
-    x$fpl$fpinit                             0x08003998   Section       10  fpinit.o(x$fpl$fpinit)
-    $v0                                      0x08003998   Number         0  fpinit.o(x$fpl$fpinit)
-    .constdata                               0x080039a4   Section       12  main.o(.constdata)
-    .constdata                               0x080039b0   Section       16  system_stm32f4xx.o(.constdata)
-    .constdata                               0x080039c0   Section        8  system_stm32f4xx.o(.constdata)
+    i.roll                                   0x080038b0   Section        0  main.o(i.roll)
+    i.send_to_hcc                            0x080038e8   Section        0  main.o(i.send_to_hcc)
+    x$fpl$fpinit                             0x080039a8   Section       10  fpinit.o(x$fpl$fpinit)
+    $v0                                      0x080039a8   Number         0  fpinit.o(x$fpl$fpinit)
+    .constdata                               0x080039b4   Section       12  main.o(.constdata)
+    .constdata                               0x080039c0   Section       16  system_stm32f4xx.o(.constdata)
+    .constdata                               0x080039d0   Section        8  system_stm32f4xx.o(.constdata)
     .data                                    0x20000000   Section       40  main.o(.data)
     .data                                    0x20000028   Section       12  stm32f4xx_hal.o(.data)
     .data                                    0x20000034   Section        4  system_stm32f4xx.o(.data)
@@ -1883,16 +1883,16 @@ Image Symbol Table
     can_init                                 0x08003581   Thumb Code    52  callback.o(i.can_init)
     controller                               0x080035b9   Thumb Code   166  main.o(i.controller)
     grab                                     0x0800366d   Thumb Code   136  main.o(i.grab)
-    main                                     0x080036f9   Thumb Code   376  main.o(i.main)
-    roll                                     0x080038a1   Thumb Code    42  main.o(i.roll)
-    send_to_hcc                              0x080038d9   Thumb Code   178  main.o(i.send_to_hcc)
-    _fp_init                                 0x08003999   Thumb Code    10  fpinit.o(x$fpl$fpinit)
-    __fplib_config_fpu_vfp                   0x080039a1   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    __fplib_config_pureend_doubles           0x080039a1   Thumb Code     0  fpinit.o(x$fpl$fpinit)
-    AHBPrescTable                            0x080039b0   Data          16  system_stm32f4xx.o(.constdata)
-    APBPrescTable                            0x080039c0   Data           8  system_stm32f4xx.o(.constdata)
-    Region$$Table$$Base                      0x080039c8   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x080039e8   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x080036f9   Thumb Code   390  main.o(i.main)
+    roll                                     0x080038b1   Thumb Code    42  main.o(i.roll)
+    send_to_hcc                              0x080038e9   Thumb Code   178  main.o(i.send_to_hcc)
+    _fp_init                                 0x080039a9   Thumb Code    10  fpinit.o(x$fpl$fpinit)
+    __fplib_config_fpu_vfp                   0x080039b1   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    __fplib_config_pureend_doubles           0x080039b1   Thumb Code     0  fpinit.o(x$fpl$fpinit)
+    AHBPrescTable                            0x080039c0   Data          16  system_stm32f4xx.o(.constdata)
+    APBPrescTable                            0x080039d0   Data           8  system_stm32f4xx.o(.constdata)
+    Region$$Table$$Base                      0x080039d8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x080039f8   Number         0  anon$$obj.o(Region$$Table)
     led_counter                              0x20000000   Data           1  main.o(.data)
     indata                                   0x20000001   Data           1  main.o(.data)
     QRCode                                   0x20000002   Data           1  main.o(.data)
@@ -1939,9 +1939,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000189
 
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003a30, Max: 0x00100000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x00003a40, Max: 0x00100000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000039e8, Max: 0x00100000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000039f8, Max: 0x00100000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -2145,30 +2145,30 @@ Memory Map of the image
     0x08003580   0x08003580   0x00000038   Code   RO         3654    i.can_init          callback.o
     0x080035b8   0x080035b8   0x000000b4   Code   RO           18    i.controller        main.o
     0x0800366c   0x0800366c   0x0000008c   Code   RO           20    i.grab              main.o
-    0x080036f8   0x080036f8   0x000001a8   Code   RO           21    i.main              main.o
-    0x080038a0   0x080038a0   0x00000038   Code   RO           23    i.roll              main.o
-    0x080038d8   0x080038d8   0x000000c0   Code   RO           24    i.send_to_hcc       main.o
-    0x08003998   0x08003998   0x0000000a   Code   RO         3925    x$fpl$fpinit        fz_wm.l(fpinit.o)
-    0x080039a2   0x080039a2   0x00000002   PAD
-    0x080039a4   0x080039a4   0x0000000c   Data   RO           26    .constdata          main.o
-    0x080039b0   0x080039b0   0x00000010   Data   RO         3616    .constdata          system_stm32f4xx.o
-    0x080039c0   0x080039c0   0x00000008   Data   RO         3617    .constdata          system_stm32f4xx.o
-    0x080039c8   0x080039c8   0x00000020   Data   RO         3983    Region$$Table       anon$$obj.o
+    0x080036f8   0x080036f8   0x000001b8   Code   RO           21    i.main              main.o
+    0x080038b0   0x080038b0   0x00000038   Code   RO           23    i.roll              main.o
+    0x080038e8   0x080038e8   0x000000c0   Code   RO           24    i.send_to_hcc       main.o
+    0x080039a8   0x080039a8   0x0000000a   Code   RO         3925    x$fpl$fpinit        fz_wm.l(fpinit.o)
+    0x080039b2   0x080039b2   0x00000002   PAD
+    0x080039b4   0x080039b4   0x0000000c   Data   RO           26    .constdata          main.o
+    0x080039c0   0x080039c0   0x00000010   Data   RO         3616    .constdata          system_stm32f4xx.o
+    0x080039d0   0x080039d0   0x00000008   Data   RO         3617    .constdata          system_stm32f4xx.o
+    0x080039d8   0x080039d8   0x00000020   Data   RO         3983    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM2 (Exec base: 0x10000000, Load base: 0x08003a30, Size: 0x00000000, Max: 0x00010000, ABSOLUTE)
+    Execution Region RW_IRAM2 (Exec base: 0x10000000, Load base: 0x08003a40, Size: 0x00000000, Max: 0x00010000, ABSOLUTE)
 
     **** No section assigned to this execution region ****
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080039e8, Size: 0x000009c0, Max: 0x00020000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x20000000, Load base: 0x080039f8, Size: 0x000009c0, Max: 0x00020000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x080039e8   0x00000028   Data   RW           27    .data               main.o
-    0x20000028   0x08003a10   0x0000000c   Data   RW         1731    .data               stm32f4xx_hal.o
-    0x20000034   0x08003a1c   0x00000004   Data   RW         3618    .data               system_stm32f4xx.o
-    0x20000038   0x08003a20   0x00000010   Data   RW         3657    .data               callback.o
+    0x20000000   0x080039f8   0x00000028   Data   RW           27    .data               main.o
+    0x20000028   0x08003a20   0x0000000c   Data   RW         1731    .data               stm32f4xx_hal.o
+    0x20000034   0x08003a2c   0x00000004   Data   RW         3618    .data               system_stm32f4xx.o
+    0x20000038   0x08003a30   0x00000010   Data   RW         3657    .data               callback.o
     0x20000048        -       0x00000084   Zero   RW           25    .bss                main.o
     0x200000cc        -       0x00000028   Zero   RW          264    .bss                can.o
     0x200000f4        -       0x00000058   Zero   RW          306    .bss                spi.o
@@ -2176,7 +2176,7 @@ Memory Map of the image
     0x2000026c        -       0x000000cc   Zero   RW          417    .bss                usart.o
     0x20000338        -       0x00000024   Zero   RW         3655    .bss                callback.o
     0x2000035c        -       0x00000060   Zero   RW         3855    .bss                c_w.l(libspace.o)
-    0x200003bc   0x08003a30   0x00000004   PAD
+    0x200003bc   0x08003a40   0x00000004   PAD
     0x200003c0        -       0x00000200   Zero   RW            2    HEAP                startup_stm32f407xx.o
     0x200005c0        -       0x00000400   Zero   RW            1    STACK               startup_stm32f407xx.o
 
@@ -2191,7 +2191,7 @@ Image component sizes
        304         34          0         16         36       4270   callback.o
        188         22          0          0         40       1693   can.o
        232         12          0          0          0       1115   gpio.o
-      1660        142         12         40        132     715613   main.o
+      1676        144         12         40        132     715617   main.o
        388          8          0          0          0       2794   pid.o
        192         26          0          0         88       1811   spi.o
         64         26        392          0       1536        844   startup_stm32f407xx.o
@@ -2212,7 +2212,7 @@ Image component sizes
        512         64          0          0        204       3188   usart.o
 
     ----------------------------------------------------------------------
-     13754        820        460         72       2324     848348   Object Totals
+     13770        822        460         72       2324     848352   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         32          0          0          0          0          0   (incl. Padding)
 
@@ -2265,15 +2265,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     14364        836        460         72       2424     837168   Grand Totals
-     14364        836        460         72       2424     837168   ELF Image Totals
-     14364        836        460         72          0          0   ROM Totals
+     14380        838        460         72       2424     837172   Grand Totals
+     14380        838        460         72       2424     837172   ELF Image Totals
+     14380        838        460         72          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                14824 (  14.48kB)
+    Total RO  Size (Code + RO Data)                14840 (  14.49kB)
     Total RW  Size (RW Data + ZI Data)              2496 (   2.44kB)
-    Total ROM Size (Code + RO Data + RW Data)      14896 (  14.55kB)
+    Total ROM Size (Code + RO Data + RW Data)      14912 (  14.56kB)
 
 ==============================================================================
 
