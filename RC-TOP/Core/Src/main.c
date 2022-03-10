@@ -226,7 +226,7 @@ int main(void)
 	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);
 	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
 	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
-	HAL_UART_Receive_IT(&huart3,indata, 1);
+	HAL_UART_Receive_IT(&huart3,SBUS_in, 25);
 	//__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val);
 	//HAL_Delay(1000);
   /* USER CODE END 2 */
@@ -363,16 +363,16 @@ void grab()
 	HAL_Delay(300);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 210);
 	HAL_Delay(100);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 130);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 230);
 	HAL_Delay(400);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
 	HAL_Delay(200);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 100);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 190);
 	HAL_Delay(300);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 460);
 	HAL_Delay(500);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 230);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 200);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 260);
 	HAL_Delay(100);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 300);
 	HAL_Delay(500);
@@ -422,12 +422,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 	if(huart==&huart3)
 	{
-		if(num!=0||indata[0]==0x0f){
-			if(indata[0]==0x0f)num=0;
-			SBUS_in[num++]=indata[0];
-			if(num==21){num=0;SBUS_intoCH();}
-		}
-		HAL_UART_Receive_IT(&huart3,indata, 1);
+			SBUS_intoCH();
+
+		HAL_UART_Receive_IT(&huart3,SBUS_in, 25);
 	}
 	
 }

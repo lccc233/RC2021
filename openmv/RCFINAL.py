@@ -61,7 +61,7 @@ while True:
                 img.draw_rectangle(blob.rect(),(255,0,0))#
                 detect_area=(int((blob.x()+blob.cx())/2),
                              int((blob.y()+blob.cy())/2),
-                             int(blob.w()/2),int(blob.h()/2))
+                             int(blob.w()/2+1),int(blob.h()/2+1))
                 statis=img.get_statistics(roi=detect_area)
                 img.draw_rectangle(detect_area,(0,255,0))#
                 img.draw_cross(blob.cx(),blob.cy(),size=5, color=(0,255,0))#
@@ -75,3 +75,4 @@ while True:
                         kind=1;
     data=bytearray([0xff,mode,kind])
     uart.write(data)
+    print(data)
