@@ -422,8 +422,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 	if(huart==&huart3)
 	{
-			SBUS_intoCH();
-
+		SBUS_intoCH();
 		HAL_UART_Receive_IT(&huart3,SBUS_in, 25);
 	}
 	
