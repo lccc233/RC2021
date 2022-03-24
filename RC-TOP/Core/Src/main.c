@@ -99,12 +99,13 @@ uint8_t mode[1];
 int QRok=0;
 uint8_t led_counter=0;
 int get=0;
+int cam_py=0;
 
 uint8_t spi_tx_buff[3]={0xAA,0x11,0xAA};
 uint8_t spi_rx_buff[3]={0};
 
 int drawer_distance_set=0;
-pid_type_def drawer_pid;
+pid_type_def drawer_pid,cam_pid;
 void controller()
 {
 	if(ch[1]<600)
@@ -210,8 +211,10 @@ int main(void)
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
 	float pid[3]={drawer_kp,drawer_ki,drawer_kd};
+	float pid_cam[3]={1,0,0};
 	can_init();//start 
 	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
+	PID_init(&cam_pid,PID_POSITION,pid_cam,300000,1000);//pid init
 	
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);//210-430
@@ -244,31 +247,33 @@ int main(void)
 		if(get==1)grab();
 		get=0;
 		if(ch[0])controller();
-		if(mode[0]!=cam_info[1])
-			HAL_UART_Transmit(&huart6,mode,sizeof(mode),1000);
-		else 
-		{
-			if(mode[0]==1)
+		else{
+			if(mode[0]!=cam_info[1])
+				HAL_UART_Transmit(&huart6,mode,sizeof(mode),1000);
+			else 
 			{
-				if(cam_info[2]==1||cam_info[2]==2)
+				if(mode[0]==1)
 				{
-					roll();
+					if(cam_info[2]==1||cam_info[2]==2)
+					{
+						roll();
+					}
 				}
-			}
-			else if(mode[0]==2)
-			{
-				if(cam_info[2]==1)
+				else if(mode[0]==2)
 				{
-					grab();
-				}
-				else if(cam_info[2]==2)
-				{
-					ring();
-				}
-				else if(cam_info[2]==3)
-				{
-					if(QRok==1)grab();
-					HAL_Delay(1000);
+					if(cam_info[2]==1)
+					{
+						grab();
+					}
+					else if(cam_info[2]==2)
+					{
+						ring();
+					}
+					else if(cam_info[2]==3)
+					{
+						if(QRok==1)grab();
+						HAL_Delay(1000);
+					}
 				}
 			}
 		}
@@ -347,6 +352,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				led_counter = 0;
 		}
 		led_counter++;
+		drawer_distance_set=PID_calc(&cam_pid,cam_py,0);
 	}
 }
 void roll()
