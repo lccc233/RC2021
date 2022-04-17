@@ -6,7 +6,7 @@ sensor.set_pixformat(sensor.RGB565)
 sensor.set_framesize(sensor.QQQVGA)
 
 sensor.set_auto_exposure(False, \
-    exposure_us = 2000)
+    exposure_us = 20000)
 sensor.skip_frames(20)
 #sensor.set_auto_gain(False)
 sensor.set_auto_whitebal(False)

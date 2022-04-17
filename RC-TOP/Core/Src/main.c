@@ -94,7 +94,7 @@ void grab(void);
 void ring(void);
 void send_to_hcc(void);
 uint8_t QRCode[1];
-uint8_t cam_info[3];
+uint8_t cam_info[5];
 uint8_t mode[1];
 int QRok=0;
 uint8_t led_counter=0;
@@ -214,7 +214,7 @@ int main(void)
 	float pid_cam[3]={1,0,0};
 	can_init();//start 
 	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
-	PID_init(&cam_pid,PID_POSITION,pid_cam,300000,1000);//pid init
+	PID_init(&cam_pid,PID_POSITION,pid_cam,300000,100000);//pid init
 	
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);//210-430
@@ -226,7 +226,7 @@ int main(void)
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
-	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 20);
+	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 200);
 	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
 	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
 	HAL_UART_Receive_IT(&huart3,SBUS_in, 25);
@@ -263,11 +263,11 @@ int main(void)
 				{
 					if(cam_info[2]==1)
 					{
-						grab();
+						//grab();
 					}
 					else if(cam_info[2]==2)
 					{
-						ring();
+						//ring();
 					}
 					else if(cam_info[2]==3)
 					{
@@ -333,7 +333,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == (&htim2))
 	{
-		switch(led_counter)
+		switch(led_counter%2)
 		{
 			case 0:
 				HAL_GPIO_WritePin(LED_R_GPIO_Port,LED_R_Pin,GPIO_PIN_RESET);
@@ -349,7 +349,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				HAL_GPIO_WritePin(LED_R_GPIO_Port,LED_R_Pin,GPIO_PIN_SET);
 				HAL_GPIO_WritePin(LED_G_GPIO_Port,LED_G_Pin,GPIO_PIN_SET);
 				HAL_GPIO_WritePin(LED_B_GPIO_Port,LED_B_Pin,GPIO_PIN_RESET);
-				led_counter = 0;
+				//led_counter = 0;
 		}
 		led_counter++;
 		drawer_distance_set=PID_calc(&cam_pid,cam_py,0);
@@ -425,6 +425,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart==&huart6)
 	{
 		HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
+		cam_py=cam_info[4]-30;
 	}
 	if(huart==&huart3)
 	{
@@ -467,4 +468,3 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
