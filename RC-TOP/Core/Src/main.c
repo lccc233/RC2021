@@ -223,9 +223,9 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim8,TIM_CHANNEL_2);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
+//	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
+//	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 140);
+//	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 175);
 	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, 200);
 	HAL_UART_Receive_IT(&huart1, QRCode, sizeof(QRCode));
 	HAL_UART_Receive_IT(&huart6, cam_info, sizeof(cam_info));
@@ -238,14 +238,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {	
-		send_to_hcc();
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
-		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
-		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, rabbit_1);
-		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
-		if(get==1)grab();
-		get=0;
+		//send_to_hcc();
+//		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
+//		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
+//		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
+//		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, rabbit_1);
+//		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
+//		if(get==1)grab();
+//		get=0;
 		if(ch[0])controller();
 		else{
 			if(mode[0]!=cam_info[1])
@@ -254,8 +254,11 @@ int main(void)
 			{
 				if(mode[0]==1)
 				{
+					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 230);
+					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 320);
 					if(cam_info[2]==1||cam_info[2]==2)
 					{
+						if(cam_info[3]-40<10&&cam_info[3]-40>-10)
 						roll();
 					}
 				}
@@ -277,7 +280,6 @@ int main(void)
 				}
 			}
 		}
-		HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -352,7 +354,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				//led_counter = 0;
 		}
 		led_counter++;
-		drawer_distance_set=PID_calc(&cam_pid,cam_py,0);
+		//drawer_distance_set=PID_calc(&cam_pid,cam_py,0);
 	}
 }
 void roll()
