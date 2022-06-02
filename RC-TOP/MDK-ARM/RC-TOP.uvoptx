@@ -188,147 +188,117 @@
         <Ww>
           <count>6</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer</ItemText>
+          <ItemText>drawer_distance_set,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>7</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_change,0x0A</ItemText>
+          <ItemText>drawer_pid</ItemText>
         </Ww>
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_delta,0x0A</ItemText>
+          <ItemText>pwm_val_1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_distance_set,0x0A</ItemText>
+          <ItemText>pwm_val_2,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_pid</ItemText>
+          <ItemText>pwm_val_3,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>11</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer,0x0A</ItemText>
+          <ItemText>drawer_distance_set,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_pid</ItemText>
+          <ItemText>ch,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_1,0x0A</ItemText>
+          <ItemText>spi_tx_buff</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_2,0x0A</ItemText>
+          <ItemText>spi_rx_buff</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>pwm_val_3,0x0A</ItemText>
+          <ItemText>rabbit_1,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>drawer_distance_set,0x0A</ItemText>
+          <ItemText>rabbit_2,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ch,0x0A</ItemText>
+          <ItemText>SBUS_in</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spi_tx_buff</ItemText>
+          <ItemText>cam_pid</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spi_rx_buff</ItemText>
+          <ItemText>cam_py,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rabbit_1,0x0A</ItemText>
+          <ItemText>motor_measure_chassis[0],0x0A</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>1</WinNumber>
-          <ItemText>rabbit_2,0x0A</ItemText>
+          <ItemText>m2006_speed</ItemText>
         </Ww>
         <Ww>
           <count>22</count>
           <WinNumber>1</WinNumber>
-          <ItemText>SBUS_in</ItemText>
+          <ItemText>m2006_pos</ItemText>
         </Ww>
         <Ww>
           <count>23</count>
           <WinNumber>1</WinNumber>
-          <ItemText>light</ItemText>
+          <ItemText>safe_flag</ItemText>
         </Ww>
         <Ww>
           <count>24</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cam_pid</ItemText>
+          <ItemText>communicate,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>25</count>
           <WinNumber>1</WinNumber>
-          <ItemText>cam_py,0x0A</ItemText>
+          <ItemText>motor_measure_m2006</ItemText>
         </Ww>
         <Ww>
           <count>26</count>
           <WinNumber>1</WinNumber>
-          <ItemText>motor_measure_chassis[0],0x0A</ItemText>
+          <ItemText>r_f</ItemText>
         </Ww>
         <Ww>
           <count>27</count>
           <WinNumber>1</WinNumber>
-          <ItemText>m2006_speed</ItemText>
+          <ItemText>mode_f</ItemText>
         </Ww>
         <Ww>
           <count>28</count>
           <WinNumber>1</WinNumber>
-          <ItemText>m2006_pos</ItemText>
-        </Ww>
-        <Ww>
-          <count>29</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>safe_flag</ItemText>
-        </Ww>
-        <Ww>
-          <count>30</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>communicate,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>31</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>motor_measure_m2006</ItemText>
-        </Ww>
-        <Ww>
-          <count>32</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>r_f</ItemText>
-        </Ww>
-        <Ww>
-          <count>33</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>TIM8,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>34</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>TIM1,0x0A</ItemText>
+          <ItemText>grab_flag</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [RC-TOP\RC-TOP.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image RC-TOP\RC-TOP.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Thu Jun 02 00:04:03 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Fri Jun 03 03:55:08 2022
 <BR><P>
 <H3>Maximum Stack Usage =        200 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1123,8 +1123,8 @@ Global Symbols
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
 </UL>
 
-<P><STRONG><a name="[c6]"></a>HAL_UART_RxCpltCallback</STRONG> (Thumb, 88 bytes, Stack size 16 bytes, main.o(i.HAL_UART_RxCpltCallback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_UART_RxCpltCallback
+<P><STRONG><a name="[c6]"></a>HAL_UART_RxCpltCallback</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, main.o(i.HAL_UART_RxCpltCallback))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = HAL_UART_RxCpltCallback
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Receive_IT
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SBUS_intoCH
@@ -1391,7 +1391,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[de]"></a>controller</STRONG> (Thumb, 166 bytes, Stack size 24 bytes, main.o(i.controller))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = controller &rArr; grab &rArr; HAL_Delay
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = controller &rArr; roll &rArr; HAL_Delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;roll
@@ -1400,8 +1400,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[df]"></a>grab</STRONG> (Thumb, 144 bytes, Stack size 24 bytes, main.o(i.grab))
-<BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = grab &rArr; HAL_Delay
+<P><STRONG><a name="[df]"></a>grab</STRONG> (Thumb, 158 bytes, Stack size 16 bytes, main.o(i.grab))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = grab &rArr; HAL_Delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 </UL>
@@ -1409,7 +1409,7 @@ Global Symbols
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;controller
 </UL>
 
-<P><STRONG><a name="[6d]"></a>main</STRONG> (Thumb, 734 bytes, Stack size 16 bytes, main.o(i.main))
+<P><STRONG><a name="[6d]"></a>main</STRONG> (Thumb, 1034 bytes, Stack size 16 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 200<LI>Call Chain = main &rArr; MX_TIM8_Init &rArr; HAL_TIM_MspPostInit &rArr; HAL_GPIO_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;can_filter_init
@@ -1441,7 +1441,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[e4]"></a>ring</STRONG> (Thumb, 248 bytes, Stack size 40 bytes, main.o(i.ring))
+<P><STRONG><a name="[e4]"></a>ring</STRONG> (Thumb, 262 bytes, Stack size 40 bytes, main.o(i.ring))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = ring &rArr; CAN_CMD_Communicate &rArr; HAL_CAN_AddTxMessage
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
@@ -1450,8 +1450,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[e0]"></a>roll</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, main.o(i.roll))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = roll &rArr; HAL_Delay
+<P><STRONG><a name="[e0]"></a>roll</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, main.o(i.roll))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = roll &rArr; HAL_Delay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 </UL>
@@ -1533,7 +1533,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[bb]"></a>UART_Receive_IT</STRONG> (Thumb, 192 bytes, Stack size 8 bytes, stm32f4xx_hal_uart.o(i.UART_Receive_IT))
-<BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = UART_Receive_IT &rArr; HAL_UART_RxCpltCallback
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = UART_Receive_IT &rArr; HAL_UART_RxCpltCallback
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_RxCpltCallback
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_RxEventCallback
