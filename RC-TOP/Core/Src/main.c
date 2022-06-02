@@ -27,8 +27,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "callback.h"
+#include "bsp_can.h"
 #include "pid.h"
+#include "stdlib.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +55,21 @@
 #define drawer_kd 3
 #define drawer_out 3000 
 #define drawer_iout 300
+
+#define M2006_S_KP 8.0f
+#define M2006_S_KI 0.0f
+#define M2006_S_KD 0.0f
+#define M2006_S_OUT	4000.0f
+#define M2006_S_IOUT 2000.0f
+
+#define M2006_P_KP 0.5f
+#define M2006_P_KI 0.0f
+#define M2006_P_KD 1.0f
+#define M2006_P_OUT	8000.0f
+#define M2006_P_IOUT 6000.0f
+
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,6 +101,9 @@ ch[15] = ((SBUS_in[21]>>5|SBUS_in[22]<<3)                & 0x07FF);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+extern pid_type_def m2006_speed;
+extern pid_type_def m2006_pos;
+int16_t com1,com2;
 uint16_t pwm_val_1=0;
 uint16_t pwm_val_2=0;
 uint16_t pwm_val_3=0;
@@ -93,6 +113,7 @@ void roll(void);
 void grab(void);
 void ring(void);
 void send_to_hcc(void);
+void win(void);
 uint8_t QRCode[1];
 uint8_t cam_info[5];
 uint8_t mode[1];
@@ -100,7 +121,9 @@ int QRok=0;
 uint8_t led_counter=0;
 int get=0;
 int cam_py=0;
+int mode_f=0;
 
+extern int16_t communicate[3];
 uint8_t spi_tx_buff[3]={0xAA,0x11,0xAA};
 uint8_t spi_rx_buff[3]={0};
 
@@ -210,11 +233,18 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
-	float pid[3]={drawer_kp,drawer_ki,drawer_kd};
-	float pid_cam[3]={1,0,0};
-	can_init();//start 
-	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
-	PID_init(&cam_pid,PID_POSITION,pid_cam,300000,100000);//pid init
+	{
+		float pid[3]={M2006_P_KP, M2006_P_KI, M2006_P_KD};
+		PID_init(&m2006_pos, PID_POSITION, pid, M2006_P_OUT, M2006_P_IOUT);
+	}
+	{
+		float pid[3]={M2006_S_KP, M2006_S_KI, M2006_S_KD};
+		PID_init(&m2006_speed, PID_POSITION, pid, M2006_S_OUT, M2006_S_IOUT);
+	}	
+	can_filter_init();//start 	
+//	float pid_cam[3]={1,0,0};
+//	PID_init(&drawer_pid,PID_POSITION,pid,drawer_out,drawer_iout);//pid init
+//	PID_init(&cam_pid,PID_POSITION,pid_cam,300000,100000);//pid init
 	
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);//210-430
@@ -236,16 +266,41 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+//	while(1){
+//		CAN_CMD_Communicate(123, 123, 123);
+//		HAL_Delay(10);
+//	}
+//	while(1){
+//	
+//	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
+//	HAL_Delay(10);
+//	}
+
+
+
   while (1)
   {	
+//		HAL_Delay(100);
+		if(communicate[0]==1)mode[0]=2;
+		else if(communicate[0]==2)mode[0]=1;
+		else if(communicate[0]==0)mode[0]=0;
+		else if(communicate[0]==3)win();
+		else if(communicate[0]==4){
+			mode[0]=1;
+			mode_f=1;
+		}
+		if(mode[0]==0){drawer_distance_set=0;__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 370);__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 420);
+					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 425);}
+		HAL_Delay(10);
 		//send_to_hcc();
 //		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, pwm_val_1);
+		
 //		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, pwm_val_2);
 //		__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, pwm_val_3);
 //		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_1, rabbit_1);
 //		__HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_2, rabbit_2);
-//		if(get==1)grab();
-//		get=0;
+		if(get==1)roll();
+		get=0;
 		if(ch[0])controller();
 		else{
 			if(mode[0]!=cam_info[1])
@@ -254,29 +309,109 @@ int main(void)
 			{
 				if(mode[0]==1)
 				{
-					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 230);
-					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 320);
-					if(cam_info[2]==1||cam_info[2]==2)
-					{
-						if(cam_info[3]-40<10&&cam_info[3]-40>-10)
-						roll();
+					if(mode_f==0){
+						__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
+						__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 420);
+						__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 380);
+						drawer_distance_set=300000;
+						if(cam_info[2]==1){
+							if(cam_info[3]<50){
+								CAN_CMD_Communicate(1, 0, 0);
+								int ax=0;
+//								while(cam_info[4]-120>20||cam_info[4]-120<-20){
+//									drawer_distance_set+=(cam_info[4]-120)*100;
+//									HAL_Delay(10);
+//									ax++;
+//									if(ax>100)break;
+//								}
+								__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 190);
+								HAL_Delay(2000);
+								while(abs(drawer_distance_set-motor_measure_chassis[0].code)>1000){
+									HAL_Delay(10);
+								}
+								drawer_distance_set=1000;
+								HAL_Delay(800);
+								__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 380);
+								HAL_Delay(200);
+								drawer_distance_set=300000;
+								CAN_CMD_Communicate(0, 0, 0);
+							}
+						}
+					}
+					else{
+						drawer_distance_set=220000;
+						__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 230);
+						__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 320);
+						__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 325);
+						if(cam_info[2]==1||cam_info[2]==2)
+						{
+							if(cam_info[3]<50){
+								if(cam_info[2]==1){
+									CAN_CMD_Communicate(0, 0, 0);
+								}
+								if(cam_info[2]==2){
+									CAN_CMD_Communicate(0, 1, 0);
+								}
+								roll();
+							}
+						}
 					}
 				}
 				else if(mode[0]==2)
 				{
+					drawer_distance_set=270000;
+					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
+					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 420);
+					__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 425);
 					if(cam_info[2]==1)
 					{
-						//grab();
+						if(cam_info[3]<50){
+							CAN_CMD_Communicate(1, 0, 0);
+							int ax=0;
+							while(!communicate[1]){
+								ax++;
+								HAL_Delay(1);if(ax>2000)break;
+							}
+							ax=0;
+//							while(cam_info[4]-120>20||cam_info[4]-120<-20){
+//								drawer_distance_set+=(cam_info[4]-120)*100;
+//								HAL_Delay(10);
+//								if(drawer_distance_set>320000)drawer_distance_set=320000;
+//								ax++;
+//								if(ax>100)break;
+//							}
+							grab();
+							CAN_CMD_Communicate(0, 0, 0);
+						}
+						//HAL_Delay(200);
 					}
 					else if(cam_info[2]==2)
 					{
-						//ring();
+						if(cam_info[3]<50)
+						ring();
 					}
-					else if(cam_info[2]==3)
-					{
-						if(QRok==1)grab();
-						HAL_Delay(1000);
-					}
+//					else if(cam_info[2]==3)
+//					{
+//						if(QRok==1)grab();
+//						else{   
+//							CAN_CMD_Communicate(1, 0, 0);
+//							int ax=0;
+//							while(!communicate[1]){
+//								ax++;
+//								HAL_Delay(1);if(ax>2000)break;
+//							}
+//							ax=1000;
+//							while(ax--){
+//								HAL_Delay(1);
+//								if(QRok==1)grab();
+//								if(cam_info[2]==1)grab();
+//								break;
+//							}
+//							CAN_CMD_Communicate(0, 0, 0);
+//						}
+//						QRok=0;
+//						//HAL_Delay(1000);
+//					}
 				}
 			}
 		}
@@ -359,61 +494,101 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 void roll()
 {
-	long i;
-	for(i=450000;i>=290000;--i)__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, i/1000);
-	HAL_Delay(150);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 450);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 255);
+	HAL_Delay(120);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 325);
+	HAL_Delay(800);
 }
 
 void grab()
 {
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 260);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 330);
 	HAL_Delay(300);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 210);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 100);
 	HAL_Delay(100);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 230);
 	HAL_Delay(400);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
-	HAL_Delay(200);
+	HAL_Delay(600);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 190);
 	HAL_Delay(300);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 460);
 	HAL_Delay(500);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 230);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 260);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 140);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 425);
 	HAL_Delay(100);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 300);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 200);
 	HAL_Delay(500);
 	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
-	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 430);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 420);
+	HAL_Delay(300);
 }
-
+int r_f=0;
 void ring()
 {
+	r_f=1;
+	CAN_CMD_Communicate(1, 0, 0);
+	int ax=0;
+	while(!communicate[1]){
+			ax++;
+			HAL_Delay(1);if(ax>2000)break;
+	}
+	HAL_Delay(500);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 330);
+	HAL_Delay(300);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 100);
+	HAL_Delay(100);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 230);
+	HAL_Delay(400);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
+	HAL_Delay(600);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 190);
+	HAL_Delay(300);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 300);
+	CAN_CMD_Communicate(1, 2, 0);
+	while(communicate[1]!=2){
+			ax++;
+			HAL_Delay(1);if(ax>2000)break;
+	}
+	HAL_Delay(100);
+	drawer_distance_set=0;
+	HAL_Delay(500);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 220);
+	HAL_Delay(800);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 425);
+	HAL_Delay(300);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 330);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 420);
+	drawer_distance_set=300000;
 	
+	HAL_Delay(500);
+	CAN_CMD_Communicate(0, 0, 0);
 }
-
-void send_to_hcc()
+void win()
 {
-	int i=0;
-	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[0],&spi_rx_buff[2],1,10);
-	while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
-	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
-	i++;
-	HAL_Delay(1);
-	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[1],&spi_rx_buff[0],1,10);
-  while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
-	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
-	i++;
-	HAL_Delay(1);
-	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(&hspi2,&spi_tx_buff[2],&spi_rx_buff[1],1,10);
-  while(__HAL_SPI_GET_FLAG(&hspi2,SPI_FLAG_BSY)!=RESET){;};
-	HAL_GPIO_WritePin(spi2_soft_single_GPIO_Port,spi2_soft_single_Pin,GPIO_PIN_SET);
+	drawer_distance_set=0;
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 231);
+	CAN_CMD_Communicate(1, 0, 0);
+	int ax=0;
+	while(communicate[1]!=2){
+		ax++;
+		HAL_Delay(1);if(ax>2000)break;
+	}
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 190);
+	HAL_Delay(100);
+	CAN_CMD_Communicate(2, 0, 0);
+	HAL_Delay(500);
+	drawer_distance_set=240000;
+	HAL_Delay(500);
+	CAN_CMD_Communicate(3, 0, 0);
+	HAL_Delay(1300);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_2, 400);
+	HAL_Delay(200);
+	__HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_3, 300);
+	CAN_CMD_Communicate(0, 0, 0);
+	HAL_Delay(1000);
+	communicate[0]=0;
 }
-
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart==&huart1)

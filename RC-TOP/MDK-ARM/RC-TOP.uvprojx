@@ -541,11 +541,6 @@
           <GroupName>USER</GroupName>
           <Files>
             <File>
-              <FileName>callback.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\callback.c</FilePath>
-            </File>
-            <File>
               <FileName>pid.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\pid.c</FilePath>
@@ -554,6 +549,11 @@
               <FileName>readme.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\readme.txt</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\bsp_can.c</FilePath>
             </File>
           </Files>
         </Group>
